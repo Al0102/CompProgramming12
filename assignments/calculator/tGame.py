@@ -75,9 +75,9 @@ class KeyboardInput:
             # ord() converts to ascii
             key = msvcrt.getwch()
             char = ord(key)
-            render('\033[1;1H')
-            render(str(key))
-        render('\033[2;1H' + str(char))
+# Test -             render('\033[1;1H')
+# Test -             render(str(key))
+# Test -         render('\033[2;1H' + str(char))
 
         # ASCII (a - ~)
         if 32 <= char <= 126:
@@ -86,36 +86,37 @@ class KeyboardInput:
 
         # ENTER
         elif char in {10, 13}:
-            render("\033[3;5H ENTER")
+# Test -             render("\033[3;5H ENTER")
             self.pressed = KEY.ENTER
+            return
+        # CTRL-C
+        if char == 3:
+            self.pressed = KEY.QUIT
             return
 
         if POSIX:
-            if char == 3: # CTRL-C
-                self.pressed = KEY.QUIT
-                return
-            elif char == 27:
+            if char == 27:
                 # Control codes
                 next1, next2 = ord(sys.stdin.read(1)), ord(sys.stdin.read(1))
                 if next1 == 91:
-                    render("\033[1;5H CONTROL")
+# Test -                     render("\033[1;5H CONTROL")
                     self.pressed = self._scan_in_control_codes(next2)
-                    match self.pressed:
-                        case CONTROLS.UP: 
-                            render("^")
-                            return
-                        case CONTROLS.DOWN: 
-                            render("v")
-                            return
-                        case CONTROLS.RIGHT: 
-                            render(">")
-                            return
-                        case CONTROLS.LEFT: 
-                            render("<")
-                            return
-                        case _:
-                            render(str(char))
-                            return
+# Test -                     match self.pressed:
+# Test -                         case CONTROLS.UP: 
+# Test -                             render("^")
+# Test -                             return
+# Test -                         case CONTROLS.DOWN: 
+# Test -                             render("v")
+# Test -                             return
+# Test -                         case CONTROLS.RIGHT: 
+# Test -                             render(">")
+# Test -                             return
+# Test -                         case CONTROLS.LEFT: 
+# Test -                             render("<")
+# Test -                             return
+# Test -                         case _:
+# Test -                             render(str(char))
+# Test -                             return
                     return
 
                 # ESCAPE - If no control codes are inputted,
@@ -128,28 +129,28 @@ class KeyboardInput:
             # Control codes
             if char == 0x00 or char == 0xE0:
                 next_ = ord(msvcrt.getwch())
-                render("\033[2;5H CONTROL")
+# Test -                 render("\033[2;5H CONTROL")
                 self.pressed = self._scan_in_control_codes(next_)
-                match self.pressed:
-                    case CONTROLS.UP: 
-                        render("^")
-                        return
-                    case CONTROLS.DOWN: 
-                        render("v")
-                        return
-                    case CONTROLS.RIGHT: 
-                        render(">")
-                        return
-                    case CONTROLS.LEFT: 
-                        render("<")
-                        return
-                    case _:
-                        render(str(char))
-                        return
+# Test -                 match self.pressed:
+# Test -                     case CONTROLS.UP: 
+# Test -                         render("^")
+# Test -                         return
+# Test -                     case CONTROLS.DOWN: 
+# Test -                         render("v")
+# Test -                         return
+# Test -                     case CONTROLS.RIGHT: 
+# Test -                         render(">")
+# Test -                         return
+# Test -                     case CONTROLS.LEFT: 
+# Test -                         render("<")
+# Test -                         return
+# Test -                     case _:
+# Test -                         render(str(char))
+# Test -                         return
                 return
 
             elif char == 27: #ESC
-                render("\033[3;5H ESCAPE")
+# Test -                 render("\033[3;5H ESCAPE")
                 self.pressed = CONTROLS.ESCAPE
                 return
 

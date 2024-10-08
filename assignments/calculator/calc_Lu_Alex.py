@@ -10,7 +10,6 @@ def main():
         key_input.keyIn()
         if key_input.pressed == KEY.QUIT:
             return
-        sys.stdout.flush()
 
         tGame.renderCopy()
 
