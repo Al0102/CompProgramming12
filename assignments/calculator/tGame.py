@@ -67,9 +67,6 @@ class KeyboardInput:
         raise ValueError(f'Invalid control code: {char}')
         
     def keyIn(self):
-        if not msvcrt.kbhit():
-            return
-
         if POSIX:
             # Reads one chracter from input stream 
             char = ord(sys.stdin.read(1))
@@ -78,13 +75,16 @@ class KeyboardInput:
             # ord() converts to ascii
             key = msvcrt.getwch()
             char = ord(key)
-            render(str(key) + '\033[2;1H' + str(char))
+            render('\033[1;1H')
+            render(str(key))
+        render('\033[2;1H' + str(char))
 
-        # ASCII a - ~
+        # ASCII (a - ~)
         if 32 <= char <= 126:
             self.pressed = char
             return
 
+        # ENTER
         elif char in {10, 13}:
             render("\033[3;5H ENTER")
             self.pressed = KEY.ENTER
@@ -95,29 +95,69 @@ class KeyboardInput:
                 self.pressed = KEY.QUIT
                 return
             elif char == 27:
+                # Control codes
                 next1, next2 = ord(sys.stdin.read(1)), ord(sys.stdin.read(1))
                 if next1 == 91:
                     render("\033[1;5H CONTROL")
                     self.pressed = self._scan_in_control_codes(next2)
+                    match self.pressed:
+                        case CONTROLS.UP: 
+                            render("^")
+                            return
+                        case CONTROLS.DOWN: 
+                            render("v")
+                            return
+                        case CONTROLS.RIGHT: 
+                            render(">")
+                            return
+                        case CONTROLS.LEFT: 
+                            render("<")
+                            return
+                        case _:
+                            render(str(char))
+                            return
+                    return
+
+                # ESCAPE - If no control codes are inputted,
+                #          ESC is being pressed
+                self.pressed = CONTROLS.ESCAPE
+                return
+
         # WINDOWS
         else:
+            # Control codes
             if char == 0x00 or char == 0xE0:
                 next_ = ord(msvcrt.getwch())
                 render("\033[2;5H CONTROL")
                 self.pressed = self._scan_in_control_codes(next_)
-                if self.pressed == CONTROLS.UP: render("^")
-                if self.pressed == CONTROLS.DOWN: render("v")
-                if self.pressed == CONTROLS.RIGHT: render(">")
-                if self.pressed == CONTROLS.LEFT: render("<")
+                match self.pressed:
+                    case CONTROLS.UP: 
+                        render("^")
+                        return
+                    case CONTROLS.DOWN: 
+                        render("v")
+                        return
+                    case CONTROLS.RIGHT: 
+                        render(">")
+                        return
+                    case CONTROLS.LEFT: 
+                        render("<")
+                        return
+                    case _:
+                        render(str(char))
+                        return
                 return
+
             elif char == 27: #ESC
                 render("\033[3;5H ESCAPE")
-                self.pressed = KEY.ESC
+                self.pressed = CONTROLS.ESCAPE
                 return
 
         self.pressed = -1
 
 if __name__ == "__main__":
+    init()
+
     keyboard = KeyboardInput()
 
     screenClear()
@@ -125,7 +165,7 @@ if __name__ == "__main__":
         keyboard.keyIn()
         if keyboard.pressed == KEY.QUIT:
             break
-        elif keyboard.pressed == KEY.ESC:
+        elif keyboard.pressed == CONTROLS.ESCAPE:
              screenClear()
         render("\033[;H")
 
