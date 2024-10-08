@@ -86,7 +86,7 @@ class KeyboardInput:
             return
 
         elif char in {10, 13}:
-            render("\033[1;5H CONTROL")
+            render("\033[3;5H ENTER")
             self.pressed = KEY.ENTER
             return
 
@@ -98,16 +98,20 @@ class KeyboardInput:
                 next1, next2 = ord(sys.stdin.read(1)), ord(sys.stdin.read(1))
                 if next1 == 91:
                     render("\033[1;5H CONTROL")
-                    self.pressed = _scan_in_control_codes(next2)
+                    self.pressed = self._scan_in_control_codes(next2)
         # WINDOWS
         else:
             if char == 0x00 or char == 0xE0:
                 next_ = ord(msvcrt.getwch())
-                render("\033[1;5H CONTROL")
-                self.pressed = _scan_in_control_codes(next_)
+                render("\033[2;5H CONTROL")
+                self.pressed = self._scan_in_control_codes(next_)
+                if self.pressed == CONTROLS.UP: render("^")
+                if self.pressed == CONTROLS.DOWN: render("v")
+                if self.pressed == CONTROLS.RIGHT: render(">")
+                if self.pressed == CONTROLS.LEFT: render("<")
                 return
             elif char == 27: #ESC
-                render("\033[2;5H ESCAPE")
+                render("\033[3;5H ESCAPE")
                 self.pressed = KEY.ESC
                 return
 
@@ -122,9 +126,9 @@ if __name__ == "__main__":
         if keyboard.pressed == KEY.QUIT:
             break
         elif keyboard.pressed == KEY.ESC:
-             render("\033[5HClear")
-
+             screenClear()
         render("\033[;H")
+
         renderCopy()
 
 
