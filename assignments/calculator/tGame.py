@@ -104,19 +104,14 @@ class KeyboardInput:
 # Test -                     match self.pressed:
 # Test -                         case CONTROLS.UP: 
 # Test -                             render("^")
-# Test -                             return
 # Test -                         case CONTROLS.DOWN: 
 # Test -                             render("v")
-# Test -                             return
 # Test -                         case CONTROLS.RIGHT: 
 # Test -                             render(">")
-# Test -                             return
 # Test -                         case CONTROLS.LEFT: 
 # Test -                             render("<")
-# Test -                             return
 # Test -                         case _:
 # Test -                             render(str(char))
-# Test -                             return
                     return
 
                 # ESCAPE - If no control codes are inputted,
@@ -134,19 +129,14 @@ class KeyboardInput:
 # Test -                 match self.pressed:
 # Test -                     case CONTROLS.UP: 
 # Test -                         render("^")
-# Test -                         return
 # Test -                     case CONTROLS.DOWN: 
 # Test -                         render("v")
-# Test -                         return
 # Test -                     case CONTROLS.RIGHT: 
 # Test -                         render(">")
-# Test -                         return
 # Test -                     case CONTROLS.LEFT: 
 # Test -                         render("<")
-# Test -                         return
 # Test -                     case _:
 # Test -                         render(str(char))
-# Test -                         return
                 return
 
             elif char == 27: #ESC
