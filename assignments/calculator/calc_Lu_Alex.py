@@ -39,40 +39,46 @@ def main():
             case 'y':
                 break
 
-    tGame.init()
-    help_message()
-    key_input = tGame.KeyboardInput()
+    try:
+        tGame.init()
+        help_message()
+        key_input = tGame.KeyboardInput()
+    
+        tGame.render("\033]0;Calcalexor\x07")
+        while True:
+            key_input.keyIn()
+            if key_input.pressed == KEY.QUIT:
+                return
+            if key_input.pressed == CONTROLS.ESCAPE:
+                tGame.screenClear()
+    
+            tGame.renderCopy()
 
-    tGame.render("\033]0;Calcalexor\x07")
-    while True:
-        key_input.keyIn()
-        if key_input.pressed == KEY.QUIT:
-            return
-        if key_input.pressed == CONTROLS.ESCAPE:
-            tGame.screenClear()
-
-        tGame.renderCopy()
+    finally:
+        if tGame.POSIX:
+            import tty, termios
+            termios.tcsetattr(tGame.fd,termios.TCSADRAIN, tGame.old_settings)
 
 def calculate(equation: list):
-	if len(equation) == 0:
-		return [0]
-	if len(equation) == 1 and not (str(equation[0]) in "+-*/^"):
-		return equation
-	if len(equation) == 2:
-		return equation if equation[0] == SyntaxError else (SyntaxError, 0)
+    if len(equation) == 0:
+        return [0]
+    if len(equation) == 1 and not (str(equation[0]) in "+-*/^"):
+        return equation
+    if len(equation) == 2:
+        return equation if equation[0] == SyntaxError else (SyntaxError, 0)
 
-	if "^" in equation:
-		index = equation.index("^")
-		try:
-			result = int(equation[index-1]) ** int(equation[index+1])
-			for _ in range(3):
-				equation.pop(index-1)
-			equation.insert(index-1, result)
-			equation = calculate(equation)
-		except (IndexError, ValueError, SyntaxError):
-			return (SyntaxError, index)
+    if "^" in equation:
+        index = equation.index("^")
+        try:
+            result = int(equation[index-1]) ** int(equation[index+1])
+            for _ in range(3):
+                equation.pop(index-1)
+            equation.insert(index-1, result)
+            equation = calculate(equation)
+        except (IndexError, ValueError, SyntaxError):
+            return (SyntaxError, index)
 
-	return equation
+    return equation
 
 
 
