@@ -157,20 +157,25 @@ class KeyboardInput:
         self.pressed = -1
 
 if __name__ == "__main__":
-    init()
+    try:
+        init()
+        
+        keyboard = KeyboardInput()
+        
+        screenClear()
+        for i in range(10000000):
+            keyboard.keyIn()
+            if keyboard.pressed == KEY.QUIT:
+                break
+            elif keyboard.pressed == CONTROLS.ESCAPE:
+                 screenClear()
+            render("\033[;H")
+ 
+            renderCopy()
 
-    keyboard = KeyboardInput()
-
-    screenClear()
-    for i in range(10000000):
-        keyboard.keyIn()
-        if keyboard.pressed == KEY.QUIT:
-            break
-        elif keyboard.pressed == CONTROLS.ESCAPE:
-             screenClear()
-        render("\033[;H")
-
-        renderCopy()
+    finally:
+        termios.tcsetattr(fd,termios.TCSADRAIN, old_settings)
+    
 
 
 
