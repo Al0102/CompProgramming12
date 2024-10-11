@@ -48,23 +48,10 @@ def main():
 <<<<<<< HEAD
     try:
         tGame.init()
-        help_message()
         key_input = tGame.KeyboardInput()
-    
         tGame.render("\033]0;Calcalexor\x07")
-        while True:
-            key_input.keyIn()
-            if key_input.pressed == KEY.QUIT:
-                return
-            if key_input.pressed == CONTROLS.ESCAPE:
-                tGame.screenClear()
-    
-            tGame.renderCopy()
 
-    finally:
-        if tGame.POSIX:
-            import tty, termios
-            termios.tcsetattr(tGame.fd,termios.TCSADRAIN, tGame.old_settings)
+        if help_message(key_input) == KEY.QUIT:
 =======
     tGame.init()
     key_input = tGame.KeyboardInput()
@@ -76,16 +63,33 @@ def main():
     while True:
         key_input.keyIn()
         if key_input.pressed == KEY.QUIT:
+>>>>>>> calc
             return
-        if key_input.pressed == CONTROLS.ESCAPE:
-            tGame.screenClear()
+    
+        while True:
+            key_input.keyIn()
+            if key_input.pressed == KEY.QUIT:
+                return
+            if key_input.pressed == CONTROLS.ESCAPE:
+                tGame.screenClear()
+            match key_input.pressed :
+                case KEY.K_h:
+                    help_message(key_input)
 
+<<<<<<< HEAD
+            tGame.renderCopy()
+
+    finally:
+        if tGame.POSIX:
+            import tty, termios
+            termios.tcsetattr(tGame.fd,termios.TCSADRAIN, tGame.old_settings)
+=======
         match key_input.pressed :
             case KEY.K_h:
                 help_message(key_input)
 
         tGame.renderCopy()
->>>>>>> 2cfba91 (help message new)
+>>>>>>> calc
 
 def calculate(equation: list):
     if len(equation) == 0:
@@ -98,20 +102,13 @@ def calculate(equation: list):
     if "^" in equation:
         index = equation.index("^")
         try:
-<<<<<<< HEAD
-            result = int(equation[index-1]) ** int(equation[index+1])
-=======
             result = float(equation[index-1]) ** int(equation[index+1])
->>>>>>> 2cfba91 (help message new)
             for _ in range(3):
                 equation.pop(index-1)
             equation.insert(index-1, result)
             equation = calculate(equation)
         except (IndexError, ValueError, SyntaxError):
             return (SyntaxError, index)
-<<<<<<< HEAD
-
-=======
  
     op1 = "*" in equation
     op2 = "/" in equation
@@ -167,8 +164,10 @@ def calculate(equation: list):
         except (IndexError, ValueError, SyntaxError):
             return (SyntaxError, index)
 
+<<<<<<< HEAD
+=======
 
->>>>>>> 2cfba91 (help message new)
+>>>>>>> calc
     return equation
 
 
