@@ -1,5 +1,4 @@
 import sys
-from shutil import get_terminal_size
 import operator
 import KEY, CONTROLS
 import tGame
@@ -52,7 +51,7 @@ def main():
 
         if help_message(key_input) == KEY.QUIT:
             return
-    
+
         while True:
             key_input.keyIn()
             if key_input.pressed == KEY.QUIT:
