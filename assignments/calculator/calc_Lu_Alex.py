@@ -227,6 +227,7 @@ class Calculator:
                             if (var := chr(key_input.pressed)) in Calculator.VARIABLES:
                                 self.variables[var] = try_calc[0]
                                 tGame.render(var, " = ", str(try_calc[0]))
+                            else: tGame.render("\033[2K\033[1000D","CANCELED")
 
                 case CONTROLS.ESCAPE:
                     equation = []
@@ -504,81 +505,80 @@ class Keypad:
         if not str(self.options[self.index]).strip():
             self._move_index((displacement>0)-(displacement<0))
 
-
 def help_message(input_, use_tGame_flag):
     message = (
     """
 
-      ^
-    < + > - arrow keys to move cursor (input pad)
-      v
+\033[1000D      ^
+\033[1000D    < + > - arrow keys to move cursor (input pad)
+\033[1000D      v
 
-    SPACE
-        - SPACE to select in keypad
+\033[1000D    SPACE
+\033[1000D        - SPACE to select in keypad
 
-    q
-        - 'q' to save and quit
-    CTRL+c
-        - control-C to exit at any point
-    CTRL+ALT+c
-        - control-alt-C to invoke an error (i.e force quit program)
-          NOT RECCOMMENDED unless q/CTRL+c do not work
-          May only work on some terminals
+\033[1000D    q
+\033[1000D        - 'q' to save and quit
+\033[1000D    CTRL+c
+\033[1000D        - control-C to exit at any point
+\033[1000D    CTRL+ALT+c
+\033[1000D        - control-alt-C to invoke an error (i.e force quit program)
+\033[1000D          NOT RECCOMMENDED unless q/CTRL+c do not work
+\033[1000D          May only work on some terminals
+\033[1000D
+\033[1000D    h 'h' to show this screen again
 
-    h 'h' to show this screen again
-
-       1/4 ->
+\033[1000D       1/4 ->
     """,
 
     """
 
-    0-9
-        - numbers to input digit
-    A-Z, ?
-        - capital letters or question mark (ANS) to input variables
-    [+, -, *, /, ^]
-        - operators to input operator
-    RETURN/ENTER, =
-        - return/enter or '=' to calculate equation
-    ESC
-        - escape to clear input
-
-    <- 2/4 ->
-    """,
+\033[1000D    0-9
+\033[1000D        - numbers to input digit
+\033[1000D    A-Z, ?
+\033[1000D        - capital letters or question mark (ANS) to input variables
+\033[1000D    [+, -, *, /, ^]
+\033[1000D        - operators to input operator
+\033[1000D    RETURN/ENTER, =
+\033[1000D        - return/enter or '=' to calculate equation
+\033[1000D    ESC
+\033[1000D        - escape to clear input
+\033[1000D
+\033[1000D    <- 2/4 ->
+\033[1000D    """,
 
     """
 
-    n
-        - 'n' to revert to 'append/normal mode' (default)
-          edit current equation by adding to the end of it
-    i
-        - 'i' to turn on 'insert mode'
-          move cursor
-          edit current equation by inserting left of cursor
-    r
-        - 'r' to turn on 'replace mode'
-          move cursor
-          edit current equation by replacing right (under) of cursor
+\033[1000D    n
+\033[1000D        - 'n' to revert to 'append/normal mode' (default)
+\033[1000D          edit current equation by adding to the end of it
+\033[1000D    i
+\033[1000D        - 'i' to turn on 'insert mode'
+\033[1000D          move cursor
+\033[1000D          edit current equation by inserting left of cursor
+\033[1000D    r
+\033[1000D        - 'r' to turn on 'replace mode'
+\033[1000D          move cursor
+\033[1000D          edit current equation by replacing right (under) of cursor
 
-    < - > - left and right key to move cursor (insert/replace mode)
-
-    <- 3/4 ->
+\033[1000D    < - > - left and right key to move cursor (insert/replace mode)
+\033[1000D
+\033[1000D    <- 3/4 ->
 
     """,
     """
 
-    < or >
-        - '<' or '>' to go back and forth between previous equations
-    v [variable] [value]
-        - 'v' then the name of a variable (A-Z) to store [value] in [variable]
-          Press return/enter to confirm
-          Press ESC to cancel
-          Defaults to 0 if no value is stored or if invalid value is passed
-    ~ [y/n to confirm]
-        - '~' (tilde) to reset data (history and variables)
-          Press y to confirm and n or ESC to cancel
-
-    <- 4/4 -> (exit)
+\033[1000D    < or >
+\033[1000D        - '<' or '>' to go back and forth between previous equations
+\033[1000D    v [variable] [value]
+\033[1000D        - 'v' then the name of a variable (A-Z) to store [value] in [variable]
+\033[1000D          Press return/enter to confirm
+\033[1000D          Press ESC to cancel
+\033[1000D          Defaults to 0 if no value is stored or if invalid value is passed
+\033[1000D    ~ [y/n to confirm]
+\033[1000D        - '~' (tilde) to reset data (history and variables)
+\033[1000D          Press y to confirm and n or ESC to cancel
+\033[1000D
+\033[1000D    <- 4/4 -> (exit)
     """
     )
 
