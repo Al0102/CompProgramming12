@@ -27,9 +27,10 @@ def clearRenderBuffer():
     global render_buffer
     render_buffer = ""
 
-def render(command):
+def render(*commands):
     global render_buffer
-    render_buffer += command
+    for command in commands:
+        render_buffer += command
 
 def renderCopy():
     global render_buffer
@@ -38,6 +39,13 @@ def renderCopy():
     clearRenderBuffer()
 
 def moveCursor(direction: str, amount=1):
+    """
+    direction:
+      'A' - UP
+      'B' - DOWN
+      'C' - FORWARD
+      'D' - BACK
+    """
     amount = str(amount)
     render("\033["+amount+direction)
 
@@ -84,6 +92,11 @@ class KeyboardInput:
             self.pressed = char
             return
 
+        # Backspace
+        elif char == 8:
+# Test -             render("\033[3;5H Backspace")
+            self.pressed = KEY.BACKSPACE
+            return
         # ENTER
         elif char in {10, 13}:
 # Test -             render("\033[3;5H ENTER")
@@ -164,7 +177,8 @@ if __name__ == "__main__":
             renderCopy()
 
     finally:
-        termios.tcsetattr(fd,termios.TCSADRAIN, old_settings)
+        if POSIX:
+            termios.tcsetattr(fd,termios.TCSADRAIN, old_settings)
     
 
 
