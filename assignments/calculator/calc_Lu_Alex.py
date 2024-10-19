@@ -168,6 +168,8 @@ class Calculator:
                 tGame.render("\033[15;1H\033[2KCursor: ",str(eq_index))
                 tGame.moveCursor('C', 2)
                 tGame.render("Equation Length: ",str(len(equation)))
+                tGame.moveCursor('C', 2)
+                tGame.render("System: ", tGame.os.name)
             tGame.render("\033[1;1H\033[2K", self.input_mode.name)
             tGame.render("\033[2;1H\033[2K",*map(str, equation))
             tGame.render(f"\033[2;{eq_index+1}H")
