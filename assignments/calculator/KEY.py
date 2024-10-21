@@ -1,14 +1,28 @@
 # Special (assigned placeholders, as there is no ascii code)
-QUIT = -2
+QUIT = -1
+UP = -2
+DOWN = -3
+RIGHT = -4
+LEFT = -5
 
 ESC = 7
 
 BACKSPACE = 8
 TAB = 9
+
 ENTER = 13
+
 SHIFT_OUT = 16
 SHIFT_IN = 17
+
 K_SPACE = 32
+
+K_ASTERISK = 42
+K_PLUS = 43
+K_COMMA = 44
+K_HYPHEN = 45
+K_PERIOD = 46
+K_SLASH = 47
 
 K_0= 48
 K_1= 49
@@ -20,6 +34,11 @@ K_6= 54
 K_7= 55
 K_8= 56
 K_9= 57
+
+K_LESSER = 60
+K_EQUALS = 61
+K_GREATER = 62
+K_QUESTION = 63
 
 K_A= 65
 K_B= 66
@@ -48,6 +67,8 @@ K_X= 88
 K_Y= 89
 K_Z= 90
 
+K_CARET= 94
+
 K_a= 97
 K_b= 98
 K_c= 99
@@ -74,3 +95,5 @@ K_w= 119
 K_x= 120
 K_y= 121
 K_z= 122
+
+K_TILDE= 126
