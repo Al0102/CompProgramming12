@@ -54,7 +54,8 @@ def screenClear():
 
 class KeyboardInput:
     def __init__(self):
-        self.pressed = -1
+        self.pressed = 0
+        self.key_mash_counter = 0
 
         if POSIX:
             tty.setraw(fd)
@@ -72,7 +73,10 @@ class KeyboardInput:
     def _scan_in_control_codes(self, char):
         if char in self.CONTROL_MAP:
             return self.CONTROL_MAP[char]
-        raise ValueError(f'Invalid control code: {char}')
+        ++self.key_mash_counter
+        return KEY.QUIT if self.key_mash_counter > 5 else 0
+        # Uncomment if you want to raise error for control codes that are not coded in yet
+        # raise ValueError(f'Invalid control code: {char}')
         
     def keyIn(self):
         if POSIX:
@@ -90,21 +94,31 @@ class KeyboardInput:
         # ASCII (a - ~)
         if 32 <= char <= 126:
             self.pressed = char
+            self.key_mash_counter = 0
             return
 
         # Backspace
         elif char == 8:
 # Test -             render("\033[3;5H Backspace")
             self.pressed = KEY.BACKSPACE
+            self.key_mash_counter = 0
+            return
+        # Tab
+        elif char == 9:
+# Test -             render("\033[3;5H TAB")
+            self.pressed = KEY.TAB
+            self.key_mash_counter = 0
             return
         # ENTER
         elif char in {10, 13}:
 # Test -             render("\033[3;5H ENTER")
             self.pressed = KEY.ENTER
+            self.key_mash_counter = 0
             return
         # CTRL-C
         if char == 3:
             self.pressed = KEY.QUIT
+            self.key_mash_counter = 0
             return
 
         if POSIX:
@@ -114,6 +128,7 @@ class KeyboardInput:
                 if next1 == 91:
 # Test -                     render("\033[1;5H CONTROL")
                     self.pressed = self._scan_in_control_codes(next2)
+                    if self.pressed != 0: self.key_mash_counter = 0
 # Test -                     match self.pressed:
 # Test -                         case CONTROLS.UP: 
 # Test -                             render("^")
@@ -157,7 +172,7 @@ class KeyboardInput:
                 self.pressed = CONTROLS.ESCAPE
                 return
 
-        self.pressed = -1
+        self.pressed = 0
 
 if __name__ == "__main__":
     try:

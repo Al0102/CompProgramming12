@@ -1,5 +1,6 @@
 import sys
 from enum import Enum
+from time import sleep
 import operator
 import KEY, CONTROLS
 import tGame
@@ -167,16 +168,19 @@ class Calculator:
 
         while True:
             if display_dev_tools:
-                tGame.render("\033[15;1H\033[2KCursor: ",str(eq_index))
+                tGame.render("\033[15;1H\033[2K",
+                             "Cursor: ", str(eq_index))
                 tGame.moveCursor('C', 2)
                 tGame.render("Equation Length: ",str(len(equation)))
                 tGame.moveCursor('C', 2)
                 tGame.render("System: ", tGame.os.name)
                 tGame.moveCursor('B', 1), tGame.moveCursor('D', 1000)
-                tGame.render("hist_index: ", str(hist_index))
+                tGame.render("\033[2K",
+                             "hist_index: ", str(hist_index))
 
             # Input mode
-            tGame.render("\033[1;1H\033[2K", self.input_mode.name)
+            tGame.render("\033[1;1H\033[2K\033[4m\033[1m\033[33m",
+                         self.input_mode.name, "\033[0m")
             # Current equation being inputted
             tGame.render("\033[2;1H\033[2K",*map(str, equation))
             # Sets cursor to current position
@@ -225,11 +229,13 @@ class Calculator:
                 # history < goes deeper back > goes more recent
                 case KEY.K_LESSER:
                     if len(self.history) > 0 and hist_index > 0:
+                        self.flash_equation()
                         hist_index -= 1
                         equation = self.history[hist_index][:]
                         eq_index = len(equation)-1
                 case KEY.K_GREATER:
-                    if len(self.history) > 0:
+                    if len(self.history) > 0 and hist_index < len(self.history):
+                        self.flash_equation()
                         hist_index = min(len(self.history), hist_index+1)
                         equation = self.history[hist_index][:] if hist_index < len(self.history) else []
                         eq_index = max(0, len(equation)-1)
@@ -243,8 +249,8 @@ class Calculator:
                     try_calc = self.calculate(try_calc)
                     # Goes to 3rd line from top, clears it then displays answer or error message
                     tGame.render("\033[3;1H")
-                    tGame.render("\033[2K= ")
-                    tGame.render(str(try_calc[0]))
+                    tGame.render("\033[2K", "= \033[32m")
+                    tGame.render(str(try_calc[0]), "\033[0m")
 
                     # If not an error message
                     if len(try_calc) == 1:
@@ -260,10 +266,13 @@ class Calculator:
                             if (var := chr(key_input.pressed)) in Calculator.VARIABLES:
                                 self.variables[var] = try_calc[0]
                                 tGame.render(var, " = ", str(try_calc[0]))
-                            else: tGame.render("\033[2K\033[1000D","CANCELED")
+                            else: tGame.render("\033[2K\033[1000D\033[1m\033[103m\033[31m",
+                                               "CANCELED",
+                                               "\033[0m")
 
                 # Clear all
                 case CONTROLS.ESCAPE:
+                    self.flash_equation()
                     equation = []
                     eq_index = 0
                     hist_index = len(self.history)
@@ -314,7 +323,8 @@ class Calculator:
 
     # Insert input cursor of the equation in "CURSOR MODE"
     def _insert_cursor(self, input_, index, max_index):
-        tGame.render("\033[1;1H\033[2KCURSOR MODE")
+        tGame.render("\033[1;1H\033[2K\033[1m\033[4m",
+                     "CURSOR MODE")
         tGame.render(f"\033[2;{index+1}H")
         tGame.renderCopy()
         while True:
@@ -329,7 +339,9 @@ class Calculator:
                 case CONTROLS.ESCAPE | CONTROLS.ACTION | KEY.K_n | KEY.K_i | KEY.K_r:
                     return index
 
-            tGame.render("\033[1;1H\033[2KCURSOR MODE")
+            tGame.render("\033[1;1H\033[2K\033[1m\033[4m",
+                         "CURSOR MODE",
+                         "\033[0m")
             tGame.render(f"\033[2;{index+1}H")
             tGame.renderCopy()
 
@@ -471,6 +483,16 @@ class Calculator:
             except ValueError:
                 return (SyntaxError, 0)
         return equation
+
+    # Visual effect that equation is changing
+    def flash_equation(self):
+        tGame.render("\033[2;1H\033[2K",
+                     " ")
+        tGame.renderCopy()
+        
+        sleep(0.05)
+        tGame.render("\033[2K")
+        tGame.renderCopy()
 
 
 class Keypad:
