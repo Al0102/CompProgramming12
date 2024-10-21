@@ -148,7 +148,7 @@ class Calculator:
 
     def run_loop(self, key_input: tGame.KeyboardInput):
         query_quit = None
-        dev_tools = False
+        display_dev_tools = False
         equation = []
         eq_index = 0
         hist_index = len(self.history)
@@ -162,16 +162,24 @@ class Calculator:
                         )
         keypad.format(items_per_layer=8)
 
+        # Just a divider to make it look nice
         tGame.render("\033[4H", "-"*10)
+
         while True:
-            if dev_tools:
+            if display_dev_tools:
                 tGame.render("\033[15;1H\033[2KCursor: ",str(eq_index))
                 tGame.moveCursor('C', 2)
                 tGame.render("Equation Length: ",str(len(equation)))
                 tGame.moveCursor('C', 2)
                 tGame.render("System: ", tGame.os.name)
+                tGame.moveCursor('B', 1), tGame.moveCursor('D', 1000)
+                tGame.render("hist_index: ", str(hist_index))
+
+            # Input mode
             tGame.render("\033[1;1H\033[2K", self.input_mode.name)
+            # Current equation being inputted
             tGame.render("\033[2;1H\033[2K",*map(str, equation))
+            # Sets cursor to current position
             tGame.render(f"\033[2;{eq_index+1}H")
             tGame.renderCopy()
 
@@ -191,9 +199,10 @@ class Calculator:
                     else:
                         keypress = ord(str(keypad_in)) 
 
+            # General input handling
             match keypress:
                 case KEY.K_z:
-                    dev_tools = not dev_tools
+                    display_dev_tools = not display_dev_tools
                     tGame.render("\033[14;1H\033[2K")
                 case KEY.K_q:
                     return KEY.QUIT
@@ -221,13 +230,9 @@ class Calculator:
                         eq_index = len(equation)-1
                 case KEY.K_GREATER:
                     if len(self.history) > 0:
-                        if hist_index >= len(self.history):
-                            hist_index = len(self.history)
-                            equation = []
-                        else:
-                            hist_index += 1
-                            equation = self.history[hist_index][:] if hist_index < len(self.history) else []
-                        eq_index = len(equation)-1
+                        hist_index = min(len(self.history), hist_index+1)
+                        equation = self.history[hist_index][:] if hist_index < len(self.history) else []
+                        eq_index = max(0, len(equation)-1)
     
                 # Attempt calculate current equation
                 case KEY.ENTER | KEY.K_EQUALS | KEY.K_v:
@@ -236,10 +241,12 @@ class Calculator:
                     hist_index = len(self.history)
 
                     try_calc = self.calculate(try_calc)
+                    # Goes to 3rd line from top, clears it then displays answer or error message
                     tGame.render("\033[3;1H")
                     tGame.render("\033[2K= ")
+                    tGame.render(str(try_calc[0]))
 
-                    tGame.render(' '.join(map(str, try_calc)))
+                    # If not an error message
                     if len(try_calc) == 1:
                         self.variables[Calculator.ANS] = try_calc[0]
 
@@ -255,9 +262,6 @@ class Calculator:
                                 tGame.render(var, " = ", str(try_calc[0]))
                             else: tGame.render("\033[2K\033[1000D","CANCELED")
 
-                # Equation typing - separate from Keypad/direct input
-                # Avoids repeat for input types
-                # Disadvantage: Have to re-write if equation input is wanted elsewhere
                 # Clear all
                 case CONTROLS.ESCAPE:
                     equation = []
@@ -270,7 +274,8 @@ class Calculator:
                     eq_index += 0 if (
                             self.input_mode==Calculator.INPUT_MODES.REPLACE and eq_index < len(equation) # len equation == max_index because of pop()
                             ) else -1
-                    eq_index = max(0, min(len(equation), eq_index))
+                    # Constrains index to 0-length of equation
+                    eq_index = max(0, min(len(equation)-1, eq_index))
 
                 # Displayable equation inputs (A-Z, ?, +-*/^, 0-9)
                 case keypress if (
@@ -375,6 +380,10 @@ class Calculator:
 
     # Recursive function to simplify Equation list
     # Pretty much a case specific merge sort but less optimized
+    # Errors will return (Error, int)
+    #     int was supposed to be index of where the error occurred,
+    #     but that does not really work with how the function is coded
+    #     I would get rid of it, but its kind of needed for some checks
     def calculate(self, equation: list):
         if len(equation) == 0:
             return [0]
@@ -399,6 +408,8 @@ class Calculator:
         # Could edit it if brackets are added to the order of operations
         op1 = "*" in equation
         op2 = "/" in equation
+        # checks to determine order of operations are hard-coded but speed and memory
+        # are not really issues in this case since its just 2 operations
         if op1 or op2:
             if op1:
                 index = index_op1 = equation.index("*")
@@ -455,6 +466,7 @@ class Calculator:
             return equation if equation[0] in (SyntaxError, ZeroDivisionError) else (SyntaxError, 0)
         if len(equation) == 1 and not (str(equation[0]) in "+-*/^"):
             try:
+                # checks if number has multiple decimal points
                 equation[0] = float(equation[0])
             except ValueError:
                 return (SyntaxError, 0)
@@ -493,7 +505,7 @@ class Keypad:
         # SPACE TO SELECT
         match input_:
             case CONTROLS.ACTION:
-                return self.options[self.index]
+                displace = 0
             case CONTROLS.UP:
                 displace = -self.items_per_layer if (
                         self.layout == Keypad.LAYOUT.HORIZONTAL
@@ -528,7 +540,7 @@ class Keypad:
                     tGame.render("\033[107m\033[30m", str(option), "\033[0m")
                 else:
                     tGame.render(str(option))
-        return ""
+        return self.options[self.index] if displace == 0 else ""
 
     def _move_index(self, displacement):
         self.old_index = self.index
@@ -570,13 +582,17 @@ def help_message(input_, use_tGame_flag):
 \033[1000D    SPACE
 \033[1000D        - SPACE to select in keypad
 
+\033[1000D    Can either directly type in equation (e.g "1+1")
+\033[1000D    or use arrow keys and SPACE to select
+\033[1000D    Keypad is hidden by default until arrow keys are pressed
+
 \033[1000D    q
 \033[1000D        - 'q' to save and quit
 \033[1000D    CTRL+c
 \033[1000D        - control-C to exit at any point
 \033[1000D    CTRL+ALT+c
 \033[1000D        - control-alt-C to invoke an error (i.e force quit program)
-\033[1000D          NOT RECCOMMENDED unless q/CTRL+c do not work
+\033[1000D          NOT RECOMMENDED unless q/CTRL+c do not work as it will not save work
 \033[1000D          May only work on some terminals
 \033[1000D
 \033[1000D    h 'h' to show this screen again
