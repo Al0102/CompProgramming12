@@ -177,6 +177,8 @@ class Calculator:
                 tGame.moveCursor('B', 1), tGame.moveCursor('D', 1000)
                 tGame.render("\033[2K",
                              "hist_index: ", str(hist_index))
+                tGame.moveCursor('C', 2)
+                tGame.render("Mash counter: ", str(key_input.key_mash_counter))
 
             # Input mode
             tGame.render("\033[1;1H\033[2K\033[4m\033[1m\033[33m",

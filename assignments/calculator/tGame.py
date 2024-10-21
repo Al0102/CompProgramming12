@@ -73,7 +73,7 @@ class KeyboardInput:
     def _scan_in_control_codes(self, char):
         if char in self.CONTROL_MAP:
             return self.CONTROL_MAP[char]
-        ++self.key_mash_counter
+        self.key_mash_counter += 1
         return KEY.QUIT if self.key_mash_counter > 5 else 0
         # Uncomment if you want to raise error for control codes that are not coded in yet
         # raise ValueError(f'Invalid control code: {char}')
@@ -154,6 +154,7 @@ class KeyboardInput:
                 next_ = ord(msvcrt.getwch())
 # Test -                 render("\033[2;5H CONTROL")
                 self.pressed = self._scan_in_control_codes(next_)
+                if self.pressed != 0: self.key_mash_counter = 0
 # Test -                 match self.pressed:
 # Test -                     case CONTROLS.UP: 
 # Test -                         render("^")
