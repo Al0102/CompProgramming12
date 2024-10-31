@@ -13,7 +13,9 @@ def ATM():
     # Clear screen
     print("\033[2J\033[;H")
 
-    y=(x:=[0])[:];[print(str([x.append(1)][0])+"\033[1000Dplease enter a 4-digit, positive integer") if (not (len(n:=input())==4 and n.replace('-','x').replace('(','x').isnumeric())) else [[print(str(x.pop())+"\033[1000Dwelcome")] if (n==(input())) else [print(str([y.append(1) if len(y) < 3 else print("\033[1Btoo many\033[2A")][0])+"\033[2K\033[1000Dincorrect", end='\n\n') for m in range(1)] for i in y] for j in x]
+    # first iteration of for loop is sign up and login
+    # second is withdrawal and deposit if login successful
+    for x, y in [([1], [1]), ([0], [0])]: [ [ (balance:=100000), print(f"Balance: {balance}\nWithdraw | Deposit | Quit"), [[x.append(0), [(amount_change:=input("Amount: ")), (amount_change:=abs(int(amount_change)) if amount_change.isnumeric() else 0),(balance:=balance+(amount_change if input_ == "deposit" else -amount_change)), print(f"Balance: {balance}\nWithdraw | Deposit | Quit")] if input_ in ("withdraw", "deposit") else print("Not an Option")] if ( (input_:=input().lower()) and input_ != "quit" ) else print("Logging out...") for _ in x]] if login_success else print("Bye Bye")] if x[0] == 0 else [print("Set pin:"), [print(str([x.append(1)][0])+"\033[1000Dplease enter a 4-digit, positive integer") if (not (len(n:=input())==4 and n.replace('-','x').replace('(','x').isnumeric())) else [print("Login:"), [[print(str(x.pop())+"\033[1000DWelcome"), (login_success:=True)] if (n==(input())) else [print(str([y.append(1) if len(y) < 3 else print("\033[1Btoo many attempts\033[2A")][0])+"\033[2K\033[1000Dincorrect", end='\n\n'), (login_success:=False)] for i in y]] for j in x]]
 
 def main():
     while True:
