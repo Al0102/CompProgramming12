@@ -74,7 +74,7 @@ def main():
 
     finally:
         if tGame.POSIX:
-            import tty, termios
+            import termios
             termios.tcsetattr(tGame.fd,termios.TCSADRAIN, tGame.old_settings)
 
 
