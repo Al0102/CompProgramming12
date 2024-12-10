@@ -1,10 +1,9 @@
 import sys
 from enum import Enum
 from time import sleep
-import operator
 import KEY, CONTROLS
+import operator
 import tGame
-
 """
 list<float> calculate(equation: list)
     returns calculated equation as list of ints
