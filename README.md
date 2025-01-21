@@ -27,14 +27,14 @@ __Topics__
 * Dictionaries/Sets
 * Computer Hardware
 
-__Projects/Assignments (In this repository)__  
+__Projects/Assignments__  
 * [Problem Set 1](https://docs.google.com/document/d/1j3y54Xul6yFSmP8gGqVNycoun4SsTVgtNPmRn70bx18/edit?usp=sharing)  
 * [Problem Set 2](https://docs.google.com/document/d/16K1rWGLSGKuZoFm0XDeE6OT-j2R9OLbUkquVSJ_S08g/edit?usp=sharing)
 * [Calculator](https://docs.google.com/document/d/1Q9Fb4r90x9o-eqKOMW9axXRF1ZtWwX_mj7jt5FUJuEk/edit?usp=sharing)
 * [Problem Set 3](https://docs.google.com/document/d/17XmlO8tTx4ohEasiwag2jjSmXGNMYx8AXG3ehjjygEc/edit?usp=sharing)
 * [Reminders App](https://docs.google.com/document/d/1wlUAgHfWIilc5CwCkDCxWNOitr9Y3cMos2Je0F2jcP4/edit?usp=sharing)
 * [ASCII Art Guessing Game](https://docs.google.com/document/d/1Df7I7OAkbfxShrBCLvIAxLE6on-jfLfGLxU0hKmViE4/edit?usp=sharing)
-* 
+* [Computer Parts Promotion](https://docs.google.com/document/d/1Gvcc-ATdpxixAKRF8rzi6DdgFo13YlPVy6mkaWD_KQM/edit?usp=sharing)
 ## Term 2
 
 __Topics__  
