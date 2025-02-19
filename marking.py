@@ -1,28 +1,87 @@
-def print_growing_pyramid(height):
-    # Loop through each level of the pyramid
-    for i in range(1, height + 1):
-        # Step 1: Calculate the spaces before the hashes to center the pyramid
-        spaces = ' ' * (height - i)  # Subtract the current level number from the height to center
-        # Step 2: Calculate the number of `#` characters for the current level
-        notes = '#' * (2 * i - 1)  # Number of hashes is odd, 1, 3, 5, 7, 9, ...
-        # Step 3: Combine spaces and hashes to form the current row
-        row = spaces + notes
-        # Step 4: Print the row (this shows the growing pyramid visually)
-        print(row)
-        # Additional note: show what the spaces and hashes look like at this step
-#        print(f"Level {i}: Spaces = '{spaces}', Notes = '{notes}'")
+import random
+import os
+import time
 
-# Step 5: Ask the user for the height of the pyramid
-while True:
-    try:
-        # Get user input for the height
-        height = int(input("Enter the height (positive integer)!: "))
-        if height <= 0:
-            print("Please enter positive integer bigger than 0!")
-        else:
-            break  # Exit loop if input is valid
-    except ValueError:
-        print(" Please enter positive integer!")
+# Tuple of my selected ASCII images
+ascii_art = [
+    ("penguin", """
+   _~_
+  (o o)
+ /  V  \\ 
+ /(___)\ 
+^^~~~~~^^
+"""),
+    ("boat", """
+             /|~~~   
+           ///|      
+         /////|      
+       ///////|      
+     /////////|      
+   \==========|===/  
+~~~~~~~~~~~~~~~~~~~~~    "      `
+"""),
+    ("car", """
+  ______
+ /|_||_\\`.__
+(   _    _ _\\
+=`-(_)--(_)-'
+"""),
+    ("house", """
+   _______
+  /       \\
+ /_________\\
+ |         |
+ |  _   _  |
+ | |_| |_| |
+ |         |
+ |_________|
+"""),
+    ("tree", """
+   /\\
+  /  \\
+ /____\\
+   ||
+   ||
+"""),
+    ("snowman", """
+   _|==|_  
+    ('')___/
+>--(`^^')
+  (`^'^'`)
+  `======'  ldb
+ """)
+]
 
-# Step 6: Call the function to print the pyramid based on user input
-print_growing_pyramid(height)
+def clear():
+    # Clear console screen
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def guessing_game():
+    random.shuffle(ascii_art)
+    total_score = 0
+    # Shuffle ASCII images and set initial score to 0
+
+    for name, art in ascii_art:
+        start_time = time.time()  # Start time
+        print(art)  # Display the ASCII art
+        guess = input("Can you guess what this ASCII art represents? \nYour answer: ").strip().lower()
+        attempts = 1  # Initialize attempts (start)
+
+        while guess != name.lower():
+            clear()
+            print(art)  # Redisplay the ASCII art
+            guess = input("Incorrect! Try again: ").strip().lower()
+            attempts += 1  # Increment attempts (each attempt)
+
+        end_time = time.time()
+        time_taken = end_time - start_time  # Calculate time taken
+        clear()
+        print(f"Correct! It is a {name}.")
+        print(f"It took you {attempts} {'attempt' if attempts == 1 else 'attempts'} and {time_taken:.2f} seconds to guess correctly.\n")
+        total_score += attempts + time_taken  # Update total score
+
+    # Display total score
+    print(f"Game Over! Your total score is {total_score:.2f} (lower score is better, score is based on total attempts + total time taken)!")
+
+# Run the game in the define function
+guessing_game()
